@@ -160,8 +160,9 @@
         .result {
             margin-top: 20px;
             font-size: 1.1rem;
-            font-weight: bold;
+            font-weight: normal; /* Changed to normal to make the strong tag pop */
             color: var(--text);
+            line-height: 1.6;
         }
 
         .details {
@@ -218,7 +219,7 @@
     <div class="container">
         <h2>Electricity Bill Calculator</h2>
         <br>
-        <form method="post">
+        <form method="post" id="billForm">
             <div class="toggle-container">
                 <input type="radio" id="new_rate" name="rate_type" value="new" {% if rate_type == 'new' %}checked{% endif %}>
                 <label for="new_rate" class="toggle-label label-new">New Tariff</label>
@@ -229,7 +230,7 @@
                 <div class="toggle-slider"></div>
             </div>
 
-            <input type="number" name="unit" min="0" placeholder="Enter consumed unit" required>
+            <input type="number" name="unit" min="0" placeholder="Enter consumed unit" value="{{ unit if unit is not none else '' }}" required>
             
             <div class="button-row">
                 <input type="submit" value="Calculate">
@@ -241,9 +242,10 @@
 
         {% if bill %}
             <div class="result">
+                You consumed <strong>{{ unit }} Units</strong>.<br>
                 Your electricity bill is <strong>{{ bill }} Taka</strong> only.
                 <br><br>
-                <button class="toggle-btn" onclick="toggleDetails()">View Details</button>
+                <button type="button" class="toggle-btn" onclick="toggleDetails()">View Details</button>
             </div>
         {% endif %}
 
@@ -261,7 +263,7 @@
 
         <footer>
     &copy; {{ year }} Nafis. All rights reserved. <br>
-    Version 2.3 <br>
+    Version 2.4 <br>
             <a href="https://www.instagram.com/nafis.s.himalaya/" target="_blank" style="text-decoration: none;">
         <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" style="width: 15px; height: 15px; vertical-align: middle; margin-left: 6px;">
     </a>
@@ -272,6 +274,18 @@
     </div>
 
     <script>
+        // Auto-submit logic for toggling tariffs
+        document.querySelectorAll('input[name="rate_type"]').forEach((elem) => {
+            elem.addEventListener("change", function(event) {
+                // Submit only if the unit input is not empty
+                const unitInput = document.querySelector('input[name="unit"]');
+                if (unitInput.value !== "") {
+                    document.getElementById("billForm").submit();
+                }
+            });
+        });
+
+        // Toggle detail breakdown view
         function toggleDetails() {
             const details = document.getElementById("details");
             details.style.display = details.style.display === "none" ? "block" : "none";
