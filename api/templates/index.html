@@ -70,26 +70,55 @@
             background-color: var(--bg);
         }
 
-        /* New Toggle CSS */
+        /* Modern Premium Sliding Toggle CSS */
         .toggle-container {
+            position: relative;
             display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 20px;
-            background-color: var(--bg);
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
+            background-color: #e0e0e0;
+            padding: 4px;
+            border-radius: 30px;
             max-width: 300px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 0 auto 20px auto;
+            border: 1px solid #ccc;
+            overflow: hidden;
         }
 
-        .toggle-container label {
+        .toggle-container input[type="radio"] {
+            display: none;
+        }
+
+        .toggle-label {
+            flex: 1;
+            padding: 10px 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
             cursor: pointer;
-            font-size: 15px;
-            font-weight: 500;
-            color: var(--text);
+            z-index: 2;
+            transition: color 0.3s ease;
+        }
+
+        /* Color swap based on check state */
+        #new_rate:checked ~ .label-new,
+        #old_rate:checked ~ .label-old {
+            color: #fff;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: calc(50% - 4px);
+            height: calc(100% - 8px);
+            background-color: var(--primary);
+            border-radius: 26px;
+            z-index: 1;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Slide pill indicator to the right if Old Tariff is checked */
+        #old_rate:checked ~ .toggle-slider {
+            transform: translateX(100%);
         }
 
         .button-row {
@@ -191,12 +220,13 @@
         <br>
         <form method="post">
             <div class="toggle-container">
-                <label>
-                    <input type="radio" name="rate_type" value="new" checked> New Tariff
-                </label>
-                <label>
-                    <input type="radio" name="rate_type" value="old"> Old Tariff
-                </label>
+                <input type="radio" id="new_rate" name="rate_type" value="new" {% if rate_type != 'old' %}checked{% endif %}>
+                <label for="new_rate" class="toggle-label label-new">New Tariff</label>
+                
+                <input type="radio" id="old_rate" name="rate_type" value="old" {% if rate_type == 'old' %}checked{% endif %}>
+                <label for="old_rate" class="toggle-label label-old">Old Tariff</label>
+                
+                <div class="toggle-slider"></div>
             </div>
 
             <input type="number" name="unit" min="0" placeholder="Enter consumed unit" required>
@@ -231,7 +261,7 @@
 
         <footer>
     &copy; {{ year }} Nafis. All rights reserved. <br>
-    Version 2.2 <br>
+    Version 2.3 <br>
             <a href="https://www.instagram.com/nafis.s.himalaya/" target="_blank" style="text-decoration: none;">
         <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" style="width: 15px; height: 15px; vertical-align: middle; margin-left: 6px;">
     </a>
