@@ -11,10 +11,24 @@ def index():
     if request.method == "POST":
         try:
             unit = int(request.form["unit"])
+            rate_type = request.form.get("rate_type", "new") # Default is new
+            
+            breakdown.append(f"Tariff Type: {'New' if rate_type == 'new' else 'Old'} Rate\n")
             breakdown.append(f"Total consumed unit = {unit}\n")
             bill = 0
 
-            slabs = [
+            # Your old rate
+            old_slabs = [
+                (75, 5.26),
+                (125, 7.20),
+                (100, 7.59),
+                (100, 8.02),
+                (200, 12.67),
+                (float('inf'), 14.61)
+            ]
+            
+            # New rate found from PDF
+            new_slabs = [
                 (75, 6.18),
                 (125, 8.50),
                 (100, 9.10),
@@ -22,6 +36,9 @@ def index():
                 (200, 15.01),
                 (float('inf'), 17.35)
             ]
+
+            # Take whatever the user selects
+            slabs = new_slabs if rate_type == "new" else old_slabs
 
             for slab_unit, rate in slabs:
                 if unit <= 0:
