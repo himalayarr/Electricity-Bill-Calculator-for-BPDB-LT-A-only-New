@@ -220,7 +220,7 @@
         <br>
         <form method="post">
             <div class="toggle-container">
-                <input type="radio" id="new_rate" name="rate_type" value="new" {% if rate_type != 'old' %}checked{% endif %}>
+                <input type="radio" id="new_rate" name="rate_type" value="new" {% if rate_type == 'new' %}checked{% endif %}>
                 <label for="new_rate" class="toggle-label label-new">New Tariff</label>
                 
                 <input type="radio" id="old_rate" name="rate_type" value="old" {% if rate_type == 'old' %}checked{% endif %}>
