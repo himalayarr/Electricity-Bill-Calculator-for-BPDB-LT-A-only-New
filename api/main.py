@@ -8,10 +8,12 @@ app = Flask(__name__)
 def index():
     bill = None
     breakdown = []
+    rate_type = "new" # Set default rate type for initial GET request
+    
     if request.method == "POST":
         try:
             unit = int(request.form["unit"])
-            rate_type = request.form.get("rate_type", "new") # Default is new
+            rate_type = request.form.get("rate_type", "new") # Get current selected type
             
             breakdown.append(f"Tariff Type: {'New' if rate_type == 'new' else 'Old'} Rate\n")
             breakdown.append(f"Total consumed unit = {unit}\n")
@@ -37,7 +39,7 @@ def index():
                 (float('inf'), 17.35)
             ]
 
-            # Take whatever the user selects
+            # Assign slabs based on selection
             slabs = new_slabs if rate_type == "new" else old_slabs
 
             for slab_unit, rate in slabs:
@@ -59,7 +61,8 @@ def index():
         except:
             bill = "Error in input"
 
-    return render_template("index.html", bill=bill, breakdown=breakdown, year=datetime.now().year)
+    # Crucial: pass rate_type back to template to persist state
+    return render_template("index.html", bill=bill, breakdown=breakdown, rate_type=rate_type, year=datetime.now().year)
 
 if __name__ == "__main__":
     app.run(debug=True, port=10020)
